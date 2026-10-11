@@ -52,3 +52,6 @@ venv/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# 8. Local Device & Agent Architecture Specs (Kept on local machine only)
+AGENTS.md
