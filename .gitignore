@@ -1,0 +1,54 @@
+# ==========================================
+# MEERA — GITIGNORE
+# Prevents large binary models & CUDA binaries from hitting GitHub's 100MB ceiling
+# ==========================================
+
+# 1. Models (Large GGUF binary files > 1GB)
+models/*.gguf
+models/**/*.gguf
+
+# 2. Local llama.cpp CUDA binaries & DLLs (> 100MB)
+runtime/llama.cpp/*.exe
+runtime/llama.cpp/*.dll
+runtime/llama.cpp/*.exp
+runtime/llama.cpp/*.lib
+runtime/llama.cpp/*.pdb
+
+# 3. Persistent SQLite Database files
+storage/*.db
+storage/*.db-wal
+storage/*.db-shm
+storage/*.sqlite
+storage/*.sqlite3
+
+# 4. Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 5. Runtime logs and temporary cache
+logs/*
+cache/*
+!logs/.gitkeep
+!cache/.gitkeep
+!storage/.gitkeep
+!models/.gitkeep
+
+# 6. Environment & IDE
+.env
+.env.*
+.venv/
+env/
+venv/
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 7. OS artifacts
+Thumbs.db
+Desktop.ini
+.DS_Store

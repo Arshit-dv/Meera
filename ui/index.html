@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEERA — Conceptual Sketch & Agent Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ui/style.css">
+</head>
+<body class="theme-graphite-lime">
+
+  <!-- Authentic Conceptual Sketch Background Layer -->
+  <div class="sketch-background-artwork"></div>
+
+  <div class="studio-layout">
+    
+    <!-- LEFT SIDEBAR: Agent Command Center & Chat History -->
+    <aside class="history-sidebar" id="sidebar">
+      
+      <!-- Sidebar Brand Header & Logo -->
+      <div class="sidebar-header-brand">
+        <div class="brand-badge-logo">
+          <span class="brand-letter">M</span>
+        </div>
+        <div class="brand-text-block">
+          <span class="brand-name">MEERA</span>
+          <span class="brand-sub">AGENT CORE</span>
+        </div>
+        <button id="btn-collapse-sidebar" class="btn-icon-toggle" title="Collapse Sidebar (Ctrl+B)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
+        </button>
+      </div>
+
+      <!-- APP SECTIONS (Tabs) -->
+      <div class="sidebar-nav-sections">
+        <button class="nav-section-btn active" id="tab-btn-chats" onclick="switchSidebarTab('chats')">
+          <span class="nav-icon">◈</span>
+          <span class="nav-label">Chats</span>
+          <span class="nav-badge" id="badge-chat-count">1</span>
+        </button>
+        <button class="nav-section-btn" id="tab-btn-tasks" onclick="toggleDropdown('tasks-modal')">
+          <span class="nav-icon">⬡</span>
+          <span class="nav-label">Tasks</span>
+          <span class="nav-badge highlight">Active</span>
+        </button>
+        <button class="nav-section-btn" id="tab-btn-schedules" onclick="toggleDropdown('schedules-modal')">
+          <span class="nav-icon">◷</span>
+          <span class="nav-label">Schedules</span>
+          <span class="nav-badge">Cron</span>
+        </button>
+        <button class="nav-section-btn" id="tab-btn-alerts" onclick="toggleDropdown('alerts-modal')">
+          <span class="nav-icon">▲</span>
+          <span class="nav-label">Alerts</span>
+          <span class="nav-badge pulse" id="badge-alert-count">0</span>
+        </button>
+      </div>
+
+      <!-- Quick Action: New Session -->
+      <div class="sidebar-action-row">
+        <button id="btn-new-session" class="btn-new-session" title="New Session (Ctrl+N)">
+          <span class="plus-icon">+</span>
+          <span class="btn-label">New Conversation</span>
+        </button>
+      </div>
+
+      <!-- Chat History List Area -->
+      <div class="history-scroll-area">
+        <div class="history-group-title">CONVERSATION LOGS</div>
+        <div id="history-list" class="history-list">
+          <!-- Populated dynamically via app.js -->
+        </div>
+      </div>
+
+      <!-- Sidebar Bottom: System Profile -->
+      <div class="sidebar-bottom">
+        <div class="system-status-indicator">
+          <span class="pulse-dot"></span>
+          <span class="status-text">LOCAL SYSTEM READY</span>
+        </div>
+        <div class="agent-version-tag">MEERA AGENT ARCHITECTURE // 2026</div>
+      </div>
+    </aside>
+
+    <!-- CENTER / RIGHT WORKSPACE -->
+    <div class="studio-main">
+      
+      <!-- TOP FLOATING ISLAND NAVIGATION -->
+      <header class="top-floating-island-wrapper">
+        <div class="floating-island">
+          
+          <button id="btn-expand-sidebar" class="island-btn icon-only" title="Open Sidebar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+          </button>
+
+          <div class="island-brand">
+            <span class="island-emblem">M</span>
+            <span class="island-title">MEERA</span>
+          </div>
+
+          <div class="island-divider"></div>
+
+          <!-- Floating Island Modals / Triggers -->
+          <div class="island-nav-group">
+            <button class="island-btn" onclick="toggleDropdown('skills-modal')" title="Active Skills">
+              <span class="btn-glyph">◈</span>
+              <span>Skills</span>
+              <span class="pill-count">3</span>
+            </button>
+
+            <button class="island-btn" onclick="toggleDropdown('tools-modal')" title="Tool Arsenal">
+              <span class="btn-glyph">⬡</span>
+              <span>Tools</span>
+              <span class="pill-count">4</span>
+            </button>
+
+            <button class="island-btn" onclick="toggleDropdown('files-modal')" title="Saved Files & Artifacts">
+              <span class="btn-glyph">▤</span>
+              <span>Files</span>
+            </button>
+          </div>
+
+          <div class="island-divider"></div>
+
+          <!-- Telemetry Status Badges -->
+          <div class="island-telemetry">
+            <div class="telemetry-item" title="Free System RAM">
+              <span class="pulse-dot"></span>
+              <span id="tel-ram">-- MB</span>
+            </div>
+            <div class="telemetry-item" title="Active Model">
+              <span id="tel-model">QWEN3-1.7B</span>
+            </div>
+            <div class="telemetry-item badge-engine" id="tel-engine" title="Engine Status">
+              STANDBY
+            </div>
+          </div>
+
+        </div>
+
+        <!-- DROPDOWN MODAL: SKILLS -->
+        <div id="skills-modal" class="island-modal hidden">
+          <div class="modal-header">
+            <span class="modal-title">◈ SKILLS REGISTRY</span>
+            <button class="modal-close" onclick="closeAllModals()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-item">
+              <div class="item-badge dot-lime"></div>
+              <div>
+                <div class="item-title">Core Reasoning & Code Synthesis</div>
+                <div class="item-sub">Software architecture, algorithms, and logical breakdown.</div>
+              </div>
+            </div>
+            <div class="modal-item">
+              <div class="item-badge dot-iris"></div>
+              <div>
+                <div class="item-title">Academic & Research Assistant</div>
+                <div class="item-sub">Document reading, structured analysis, and thesis drafting.</div>
+              </div>
+            </div>
+            <div class="modal-item">
+              <div class="item-badge dot-champagne"></div>
+              <div>
+                <div class="item-title">Internship & Career Strategist</div>
+                <div class="item-sub">Job description matching and resume preparation pipeline.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DROPDOWN MODAL: TOOLS -->
+        <div id="tools-modal" class="island-modal hidden">
+          <div class="modal-header">
+            <span class="modal-title">⬡ TOOL ARSENAL (GUARDRAILED)</span>
+            <button class="modal-close" onclick="closeAllModals()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-item">
+              <span class="perm-tag level-read">READ</span>
+              <div>
+                <div class="item-title">Filesystem Inspector</div>
+                <div class="item-sub">Controlled read access within project workspace.</div>
+              </div>
+            </div>
+            <div class="modal-item">
+              <span class="perm-tag level-prep">PREP</span>
+              <div>
+                <div class="item-title">Python REPL Executor</div>
+                <div class="item-sub">Isolated computational scratchpad & data analysis.</div>
+              </div>
+            </div>
+            <div class="modal-item">
+              <span class="perm-tag level-act">ACT</span>
+              <div>
+                <div class="item-title">Terminal & Shell Commander</div>
+                <div class="item-sub">Requires explicit user confirmation before execution.</div>
+              </div>
+            </div>
+            <div class="modal-item">
+              <span class="perm-tag level-mcp">MCP</span>
+              <div>
+                <div class="item-title">MCP Protocol Gateway</div>
+                <div class="item-sub">Expansion adapter port for standard tool servers.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DROPDOWN MODAL: FILES -->
+        <div id="files-modal" class="island-modal hidden">
+          <div class="modal-header">
+            <span class="modal-title">▤ WORKSPACE ARTIFACTS</span>
+            <button class="modal-close" onclick="closeAllModals()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-item clickable" onclick="insertPrompt('Explain the Meera Continuation Document in docs/')">
+              <span class="file-icon">▤</span>
+              <div>
+                <div class="item-title">Meera_Continuation_Document.pdf</div>
+                <div class="item-sub">System specifications & architectural source of truth.</div>
+              </div>
+            </div>
+            <div class="modal-item clickable" onclick="insertPrompt('Inspect settings in config/settings.py')">
+              <span class="file-icon">▤</span>
+              <div>
+                <div class="item-title">config/settings.py</div>
+                <div class="item-sub">Model parameters, context size, and hardware limits.</div>
+              </div>
+            </div>
+            <div class="modal-item clickable" onclick="insertPrompt('Explain how ModelManager handles on-demand loading in model/manager.py')">
+              <span class="file-icon">◈</span>
+              <div>
+                <div class="item-title">model/manager.py</div>
+                <div class="item-sub">Resource guardrail & RAM detection engine.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DROPDOWN MODAL: TASKS -->
+        <div id="tasks-modal" class="island-modal hidden">
+          <div class="modal-header">
+            <span class="modal-title">⬡ AGENT TASKS & WORKFLOWS</span>
+            <button class="modal-close" onclick="closeAllModals()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-item">
+              <span class="perm-tag level-act">ACTIVE</span>
+              <div>
+                <div class="item-title">Model Manager & RAM Sentry</div>
+                <div class="item-sub">Monitoring system headroom (~7.73 GiB RAM) & 5-min idle auto-unload.</div>
+              </div>
+            </div>
+            <div class="modal-item">
+              <span class="perm-tag level-prep">READY</span>
+              <div>
+                <div class="item-title">Local Context Sliding Window</div>
+                <div class="item-sub">Managing 1024 token window for Qwen3-1.7B without VRAM overflow.</div>
+              </div>
+            </div>
+            <div class="modal-item clickable" onclick="insertPrompt('List all active background tasks in Meera')">
+              <span class="file-icon">▲</span>
+              <div>
+                <div class="item-title">Query Task State</div>
+                <div class="item-sub">Ask agent to review running background jobs and execution status.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DROPDOWN MODAL: SCHEDULES -->
+        <div id="schedules-modal" class="island-modal hidden">
+          <div class="modal-header">
+            <span class="modal-title">◷ CRON & SCHEDULED ROUTINES</span>
+            <button class="modal-close" onclick="closeAllModals()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-item">
+              <span class="perm-tag level-mcp">CRON</span>
+              <div>
+                <div class="item-title">Health Check Poll (5s Interval)</div>
+                <div class="item-sub">Lightweight heartbeat fetching RAM & llama-server uptime.</div>
+              </div>
+            </div>
+            <div class="modal-item">
+              <span class="perm-tag level-read">TIMER</span>
+              <div>
+                <div class="item-title">Model Idle Watchdog (300s)</div>
+                <div class="item-sub">Frees up 1.5 GB VRAM / system memory when inactive.</div>
+              </div>
+            </div>
+            <div class="modal-item clickable" onclick="insertPrompt('How do I schedule a recurring task in Meera?')">
+              <span class="file-icon">◷</span>
+              <div>
+                <div class="item-title">Create New Schedule</div>
+                <div class="item-sub">Configure cron expressions or one-shot reminder timers.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DROPDOWN MODAL: ALERTS -->
+        <div id="alerts-modal" class="island-modal hidden">
+          <div class="modal-header">
+            <span class="modal-title">▲ SYSTEM ALERTS & TELEMETRY</span>
+            <button class="modal-close" onclick="closeAllModals()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-item">
+              <span class="perm-tag level-act">SYSTEM</span>
+              <div>
+                <div class="item-title">Zero-Dependency Architecture</div>
+                <div class="item-sub">Native Windows ctypes RAM detection & standard library HTTP.</div>
+              </div>
+            </div>
+            <div class="modal-item">
+              <span class="perm-tag level-prep">STATUS</span>
+              <div>
+                <div class="item-title">Server Runtime: Normal</div>
+                <div class="item-sub">ThreadedTCPServer serving endpoints and real-time token stream.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </header>
+
+      <!-- CHAT VIEWPORT -->
+      <main class="chat-viewport">
+        <div id="messages-container" class="messages-container">
+          
+          <!-- AUTHENTIC CONCEPTUAL SKETCH WATERMARK CARD -->
+          <div id="welcome-card" class="conceptual-sketch-hero">
+            <div class="draft-corner tl"></div>
+            <div class="draft-corner tr"></div>
+            <div class="draft-corner bl"></div>
+            <div class="draft-corner br"></div>
+
+            <div class="hero-badge">ARCHITECTURAL SKETCH STUDIO</div>
+            <h1 class="hero-title">MEERA</h1>
+            <p class="hero-subtitle">
+              A bespoke, local-first personal AI agent designed with authentic conceptual precision.
+            </p>
+
+            <div class="prompt-chips-grid">
+              <div class="prompt-chip" onclick="insertPrompt('What makes Meera different from a conventional LLM chatbot?')">
+                <span class="chip-kicker">01 // IDENTITY</span>
+                <span class="chip-text">Difference between Meera and conventional chatbots</span>
+              </div>
+              <div class="prompt-chip" onclick="insertPrompt('Write an elegant Python script implementing an LRU Cache from scratch.')">
+                <span class="chip-kicker">02 // SYNTHESIS</span>
+                <span class="chip-text">Write an elegant LRU Cache algorithm in Python</span>
+              </div>
+              <div class="prompt-chip" onclick="insertPrompt('Break down the READ / PREPARE / ACT permission model in Meera.')">
+                <span class="chip-kicker">03 // SECURITY</span>
+                <span class="chip-text">Break down the READ / PREPARE / ACT permission system</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- BOTTOM CONSOLE INPUT DOCK -->
+      <footer class="console-dock">
+        <div class="console-wrapper">
+          <div class="input-line">
+            <span class="console-glyph">&gt;&gt;</span>
+            <textarea
+              id="user-input"
+              rows="1"
+              placeholder="Ask Meera or formulate an instruction... (Shift+Enter for newline)"
+              autocomplete="off"
+            ></textarea>
+            <button id="btn-send" class="btn-send-dock" title="Send message">
+              <svg id="icon-send" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              <div id="icon-loading" class="spinner-dock hidden"></div>
+            </button>
+          </div>
+          <div class="dock-footnote">
+            <span>CTX: 1024 TOKENS</span>
+            <span>MODEL: QWEN3-1.7B-Q4_K_M</span>
+            <span>HARDWARE: RTX 2050 (4GB)</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <script src="/ui/app.js"></script>
+</body>
+</html>
