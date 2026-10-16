@@ -14,12 +14,14 @@ runtime/llama.cpp/*.exp
 runtime/llama.cpp/*.lib
 runtime/llama.cpp/*.pdb
 
-# 3. Persistent SQLite Database files
+# 3. Persistent SQLite Database & Document Vault files
 storage/*.db
 storage/*.db-wal
 storage/*.db-shm
 storage/*.sqlite
 storage/*.sqlite3
+storage/library/*
+!storage/library/.gitkeep
 
 # 4. Python bytecode & cache
 __pycache__/
@@ -48,10 +50,10 @@ venv/
 *.swp
 *.swo
 
-# 7. OS artifacts
+# 7. OS artifacts & scratch files
 Thumbs.db
 Desktop.ini
 .DS_Store
+scratch_*
+scratch/
 
-# 8. Local Device & Agent Architecture Specs (Kept on local machine only)
-AGENTS.md

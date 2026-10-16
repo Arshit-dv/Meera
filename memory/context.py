@@ -61,11 +61,17 @@ class ContextManager:
         self.config = config or MemoryConfig()
         self.base_system_prompt = base_system_prompt
 
-    def build_system_prompt(self, relevant_memories: Optional[List[LongTermMemory]] = None) -> str:
+    def build_system_prompt(
+        self,
+        relevant_memories: Optional[List[LongTermMemory]] = None,
+        tools_prompt: Optional[str] = None,
+    ) -> str:
         """
-        Injects system persona along with verified long-term memories.
+        Injects system persona along with verified long-term memories, current date/time, and compact tool schemas.
         """
-        prompt = self.base_system_prompt.strip()
+        from datetime import datetime
+        now_str = datetime.now().strftime("%A, %B %d, %Y")
+        prompt = f"{self.base_system_prompt.strip()}\n[Current Date: {now_str}]"
 
         memories = relevant_memories
         if memories is None:
@@ -77,6 +83,9 @@ class ContextManager:
                 memory_lines.append(f"- [{m.category.upper()}] {m.key}: {m.value}")
             prompt += "\n\n[Persistent Long-Term Memory & User Profile]\n" + "\n".join(memory_lines)
 
+        if tools_prompt:
+            prompt += "\n\n" + tools_prompt.strip()
+
         return prompt
 
     def build_context(
@@ -84,10 +93,11 @@ class ContextManager:
         session_id: str,
         user_message: str,
         reserve_generation_tokens: int = 300,
+        tools_prompt: Optional[str] = None,
     ) -> List[ChatMessage]:
         """
         Assembles the exact message payload for model inference:
-        1. Base system prompt + long-term memory facts
+        1. Base system prompt + long-term memory facts + tool schemas
         2. Session context summary (if older turns were summarized)
         3. Sliding window of recent turns (strictly budget-checked)
         4. User message
@@ -95,8 +105,8 @@ class ContextManager:
         token_ceiling = self.config.context_token_ceiling
         budget_for_context = token_ceiling - reserve_generation_tokens
 
-        # 1. System Prompt & Memories
-        system_content = self.build_system_prompt()
+        # 1. System Prompt & Memories & Tools
+        system_content = self.build_system_prompt(tools_prompt=tools_prompt)
         system_tokens = estimate_tokens(system_content)
 
         # 2. User Message

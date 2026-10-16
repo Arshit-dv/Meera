@@ -14,6 +14,7 @@ LOGS_DIR = BASE_DIR / "logs"
 CACHE_DIR = BASE_DIR / "cache"
 STORAGE_DIR = BASE_DIR / "storage"
 MEMORY_DB_PATH = STORAGE_DIR / "memory.db"
+WORKSPACE_DIR = BASE_DIR / "workspace"
 
 
 @dataclass(frozen=True)

@@ -306,6 +306,92 @@ class TestPhase3APIServerEndpoints(unittest.TestCase):
             data = json.loads(resp.read().decode("utf-8"))
             self.assertEqual(data["status"], "deleted")
 
+    def test_projects_and_pin_chat_api_endpoints(self):
+        base_url = f"http://127.0.0.1:{self.server_config.api_port}"
+
+        # 1. POST /api/projects
+        proj_payload = json.dumps({
+            "name": "Overlord AI",
+            "description": "Agent experiments",
+            "color": "#818CF8",
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            f"{base_url}/api/projects",
+            data=proj_payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=3.0) as resp:
+            self.assertEqual(resp.status, 201)
+            data = json.loads(resp.read().decode("utf-8"))
+            proj_id = data["project"]["id"]
+            self.assertEqual(data["project"]["name"], "Overlord AI")
+
+        # 2. GET /api/projects
+        with urllib.request.urlopen(f"{base_url}/api/projects", timeout=3.0) as resp:
+            self.assertEqual(resp.status, 200)
+            data = json.loads(resp.read().decode("utf-8"))
+            self.assertTrue(any(p["id"] == proj_id for p in data["projects"]))
+
+        # 3. Create pinned session inside this project
+        sess_payload = json.dumps({
+            "title": "Project Chat 1",
+            "metadata": {"project_id": proj_id, "pinned": True},
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            f"{base_url}/api/sessions",
+            data=sess_payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=3.0) as resp:
+            self.assertEqual(resp.status, 201)
+            sess_data = json.loads(resp.read().decode("utf-8"))
+            sess_id = sess_data["session"]["id"]
+            self.assertTrue(sess_data["session"]["metadata"]["pinned"])
+
+        # 4. GET /api/sessions?project_id=...
+        with urllib.request.urlopen(f"{base_url}/api/sessions?project_id={proj_id}", timeout=3.0) as resp:
+            self.assertEqual(resp.status, 200)
+            list_data = json.loads(resp.read().decode("utf-8"))
+            self.assertTrue(any(s["id"] == sess_id for s in list_data["sessions"]))
+
+        # 5. Toggle unpin via PATCH /api/sessions/<id>
+        patch_payload = json.dumps({"metadata": {"pinned": False}}).encode("utf-8")
+        req = urllib.request.Request(
+            f"{base_url}/api/sessions/{sess_id}",
+            data=patch_payload,
+            headers={"Content-Type": "application/json"},
+            method="PATCH",
+        )
+        with urllib.request.urlopen(req, timeout=3.0) as resp:
+            self.assertEqual(resp.status, 200)
+
+        # 5b. Rename session via POST /api/sessions/<id>/title
+        rename_payload = json.dumps({"title": "Renamed Project Chat"}).encode("utf-8")
+        req = urllib.request.Request(
+            f"{base_url}/api/sessions/{sess_id}/title",
+            data=rename_payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=3.0) as resp:
+            self.assertEqual(resp.status, 200)
+            rename_data = json.loads(resp.read().decode("utf-8"))
+            self.assertEqual(rename_data["title"], "Renamed Project Chat")
+
+        # 6. DELETE /api/projects/<id>
+        req = urllib.request.Request(f"{base_url}/api/projects/{proj_id}", method="DELETE")
+        with urllib.request.urlopen(req, timeout=3.0) as resp:
+            self.assertEqual(resp.status, 200)
+            del_data = json.loads(resp.read().decode("utf-8"))
+            self.assertEqual(del_data["status"], "deleted")
+
+        # 7. Cleanup session
+        req = urllib.request.Request(f"{base_url}/api/sessions/{sess_id}", method="DELETE")
+        with urllib.request.urlopen(req, timeout=3.0) as resp:
+            self.assertEqual(resp.status, 200)
+
 
 if __name__ == "__main__":
     unittest.main()

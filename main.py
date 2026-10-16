@@ -24,7 +24,7 @@ logger = logging.getLogger("meera.main")
 def run_cli(agent: AgentCore):
     """Interactive streaming CLI session."""
     print("=" * 60)
-    print("  MEERA - Personal AI Agent (Phase 1)")
+    print("  MEERA - Personal AI Agent (Local-First Edge Architecture)")
     print("  Type 'exit', 'quit', or 'q' to end the session.")
     print("  Type '/reset' to clear conversation context.")
     print("  Type '/status' to check RAM and model health.")
@@ -64,11 +64,26 @@ def run_cli(agent: AgentCore):
 
 def run_server(agent: AgentCore, config: ServerConfig):
     """Starts the Agent API Server."""
+    import threading
+
     if getattr(config, "prewarm", True):
-        import threading
         logger.info("Pre-warming model runtime in background for instant first prompt...")
         t = threading.Thread(target=agent.model_manager.ensure_loaded, daemon=True)
         t.start()
+
+    # Automatically synchronize Teams assignments & announcements in background on launch if authenticated
+    def _bg_teams_startup_sync():
+        try:
+            token = agent.teams_connector.get_valid_access_token()
+            if token:
+                logger.info("[STARTUP] Auto-syncing Teams assignments and announcements...")
+                d_list, _ = agent.teams_connector.sync_teams_assignments()
+                a_list = agent.teams_connector.monitor_channel_announcements()
+                logger.info(f"[STARTUP] Teams sync finished: {len(d_list)} assignments, {len(a_list)} announcements.")
+        except Exception as e:
+            logger.warning(f"[STARTUP] Background Teams sync error: {e}")
+
+    threading.Thread(target=_bg_teams_startup_sync, daemon=True).start()
 
     server = MeeraAPIServer(agent_core=agent, config=config)
     atexit.register(server.stop)

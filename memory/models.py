@@ -89,3 +89,111 @@ class LongTermMemory:
             "updated_at": self.updated_at,
             "source_session_id": self.source_session_id,
         }
+
+
+@dataclass
+class Project:
+    id: str
+    name: str
+    description: str = ""
+    color: str = "#A3E635"
+    created_at: float = field(default_factory=time.time)
+    updated_at: float = field(default_factory=time.time)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "color": self.color,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "metadata": self.metadata,
+        }
+
+
+@dataclass
+class AcademicDeadline:
+    id: str
+    title: str
+    description: str = ""
+    due_date: str = ""  # ISO format string YYYY-MM-DD or YYYY-MM-DDTHH:MM
+    platform: str = "lms"  # 'lms' or 'teams'
+    group_name: str = ""  # e.g., 'CS401: Compiler Design' or 'Operating Systems Lab'
+    url: str = ""
+    is_completed: bool = False
+    priority: str = "normal"  # 'low', 'normal', 'high', 'urgent'
+    created_at: float = field(default_factory=time.time)
+    updated_at: float = field(default_factory=time.time)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "due_date": self.due_date,
+            "platform": self.platform,
+            "group_name": self.group_name,
+            "url": self.url,
+            "is_completed": self.is_completed,
+            "priority": self.priority,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "metadata": self.metadata,
+        }
+
+
+@dataclass
+class LibraryItem:
+    id: str
+    filename: str
+    filepath: str
+    file_type: str = "pdf"
+    file_size: int = 0
+    title: str = ""
+    tags: str = ""
+    description: str = ""
+    created_at: float = field(default_factory=time.time)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "filename": self.filename,
+            "filepath": self.filepath,
+            "file_type": self.file_type,
+            "file_size": self.file_size,
+            "title": self.title,
+            "tags": self.tags,
+            "description": self.description,
+            "created_at": self.created_at,
+            "metadata": self.metadata,
+        }
+
+
+@dataclass
+class PluginItem:
+    id: str
+    name: str
+    description: str = ""
+    category: str = "integration"
+    is_enabled: bool = False
+    status: str = "disconnected"
+    config: Dict[str, Any] = field(default_factory=dict)
+    updated_at: float = field(default_factory=time.time)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "category": self.category,
+            "is_enabled": self.is_enabled,
+            "status": self.status,
+            "config": self.config,
+            "updated_at": self.updated_at,
+        }
+
+

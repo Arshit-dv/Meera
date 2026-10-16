@@ -45,29 +45,38 @@
           <span class="nav-label">Tasks</span>
           <span class="nav-badge highlight">Active</span>
         </button>
-        <button class="nav-section-btn" id="tab-btn-schedules" onclick="toggleDropdown('schedules-modal')">
+        <button class="nav-section-btn" id="tab-btn-schedules" onclick="switchSidebarTab('schedules')">
           <span class="nav-icon">◷</span>
           <span class="nav-label">Schedules</span>
-          <span class="nav-badge">Cron</span>
+          <span class="nav-badge" id="badge-deadline-count">0</span>
         </button>
-        <button class="nav-section-btn" id="tab-btn-alerts" onclick="toggleDropdown('alerts-modal')">
+        <button class="nav-section-btn" id="tab-btn-alerts" onclick="switchSidebarTab('alerts')">
           <span class="nav-icon">▲</span>
           <span class="nav-label">Alerts</span>
           <span class="nav-badge pulse" id="badge-alert-count">0</span>
         </button>
-      </div>
-
-      <!-- Quick Action: New Session -->
-      <div class="sidebar-action-row">
-        <button id="btn-new-session" class="btn-new-session" title="New Session (Ctrl+N)">
-          <span class="plus-icon">+</span>
-          <span class="btn-label">New Conversation</span>
+        <button class="nav-section-btn" id="tab-btn-plugins" onclick="switchSidebarTab('plugins')">
+          <span class="nav-icon">⊕</span>
+          <span class="nav-label">Plugins</span>
+          <span class="nav-badge" id="badge-plugins-count">4</span>
+        </button>
+        <button class="nav-section-btn" id="tab-btn-library" onclick="switchSidebarTab('library')">
+          <span class="nav-icon">▤</span>
+          <span class="nav-label">Library</span>
+          <span class="nav-badge" id="badge-library-count">0</span>
         </button>
       </div>
 
-      <!-- Chat History List Area -->
-      <div class="history-scroll-area">
-        <div class="history-group-title">CONVERSATION LOGS</div>
+      <!-- Quick Action: New Session (ChatGPT Style) -->
+      <div class="sidebar-action-row">
+        <button id="btn-new-session" class="btn-new-session" title="New Session (Ctrl+N)">
+          <svg class="compose-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          <span class="btn-label" id="btn-new-session-label">New chat</span>
+        </button>
+      </div>
+
+      <!-- Chat History List Area (Pinned / Projects / Recents) -->
+      <div class="history-scroll-area" id="history-scroll-area">
         <div id="history-list" class="history-list">
           <!-- Populated dynamically via app.js -->
         </div>
@@ -145,22 +154,22 @@
             <span class="modal-title">◈ SKILLS REGISTRY</span>
             <button class="modal-close" onclick="closeAllModals()">&times;</button>
           </div>
-          <div class="modal-body">
-            <div class="modal-item">
+          <div class="modal-body" id="skills-modal-body">
+            <div class="modal-item clickable" onclick="activateSkill('coding')">
               <div class="item-badge dot-lime"></div>
               <div>
                 <div class="item-title">Core Reasoning & Code Synthesis</div>
                 <div class="item-sub">Software architecture, algorithms, and logical breakdown.</div>
               </div>
             </div>
-            <div class="modal-item">
+            <div class="modal-item clickable" onclick="activateSkill('academic')">
               <div class="item-badge dot-iris"></div>
               <div>
                 <div class="item-title">Academic & Research Assistant</div>
                 <div class="item-sub">Document reading, structured analysis, and thesis drafting.</div>
               </div>
             </div>
-            <div class="modal-item">
+            <div class="modal-item clickable" onclick="activateSkill('career')">
               <div class="item-badge dot-champagne"></div>
               <div>
                 <div class="item-title">Internship & Career Strategist</div>
@@ -177,32 +186,32 @@
             <button class="modal-close" onclick="closeAllModals()">&times;</button>
           </div>
           <div class="modal-body">
-            <div class="modal-item">
+            <div class="modal-item clickable" onclick="insertPrompt('Use list_directory to inspect the workspace')">
               <span class="perm-tag level-read">READ</span>
               <div>
-                <div class="item-title">Filesystem Inspector</div>
-                <div class="item-sub">Controlled read access within project workspace.</div>
+                <div class="item-title">Filesystem Inspector (list_directory, read_file)</div>
+                <div class="item-sub">Controlled read access strictly within project workspace.</div>
               </div>
             </div>
-            <div class="modal-item">
+            <div class="modal-item clickable" onclick="insertPrompt('Use python_eval to calculate: sum(i**2 for i in range(100))')">
               <span class="perm-tag level-prep">PREP</span>
               <div>
-                <div class="item-title">Python REPL Executor</div>
+                <div class="item-title">Python REPL Executor (python_eval)</div>
                 <div class="item-sub">Isolated computational scratchpad & data analysis.</div>
               </div>
             </div>
-            <div class="modal-item">
+            <div class="modal-item clickable" onclick="insertPrompt('Use run_command to check: git --version')">
               <span class="perm-tag level-act">ACT</span>
               <div>
-                <div class="item-title">Terminal & Shell Commander</div>
+                <div class="item-title">Terminal & Shell Commander (run_command)</div>
                 <div class="item-sub">Requires explicit user confirmation before execution.</div>
               </div>
             </div>
-            <div class="modal-item">
+            <div class="modal-item clickable" onclick="insertPrompt('Explain how MCP adapter discovers tools in tools/mcp.py')">
               <span class="perm-tag level-mcp">MCP</span>
               <div>
-                <div class="item-title">MCP Protocol Gateway</div>
-                <div class="item-sub">Expansion adapter port for standard tool servers.</div>
+                <div class="item-title">MCP Protocol Gateway (Model Context Protocol)</div>
+                <div class="item-sub">Expansion adapter port for standard JSON-RPC tool servers.</div>
               </div>
             </div>
           </div>
@@ -211,29 +220,29 @@
         <!-- DROPDOWN MODAL: FILES -->
         <div id="files-modal" class="island-modal hidden">
           <div class="modal-header">
-            <span class="modal-title">▤ WORKSPACE ARTIFACTS</span>
+            <span class="modal-title">▤ USER WORKSPACE FILES</span>
             <button class="modal-close" onclick="closeAllModals()">&times;</button>
           </div>
           <div class="modal-body">
-            <div class="modal-item clickable" onclick="insertPrompt('Explain the Meera Continuation Document in docs/')">
+            <div class="modal-item clickable" onclick="insertPrompt('List all files in my workspace directory')">
               <span class="file-icon">▤</span>
               <div>
-                <div class="item-title">Meera_Continuation_Document.pdf</div>
-                <div class="item-sub">System specifications & architectural source of truth.</div>
+                <div class="item-title">workspace/</div>
+                <div class="item-sub">Designated sandboxed folder for your tasks and documents.</div>
               </div>
             </div>
-            <div class="modal-item clickable" onclick="insertPrompt('Inspect settings in config/settings.py')">
+            <div class="modal-item clickable" onclick="insertPrompt('Inspect workspace/notes.txt')">
               <span class="file-icon">▤</span>
               <div>
-                <div class="item-title">config/settings.py</div>
-                <div class="item-sub">Model parameters, context size, and hardware limits.</div>
+                <div class="item-title">workspace/notes.txt</div>
+                <div class="item-sub">Scratchpad and user notes file in sandbox.</div>
               </div>
             </div>
-            <div class="modal-item clickable" onclick="insertPrompt('Explain how ModelManager handles on-demand loading in model/manager.py')">
+            <div class="modal-item clickable" onclick="insertPrompt('Create a summary document in workspace/summary.md')">
               <span class="file-icon">◈</span>
               <div>
-                <div class="item-title">model/manager.py</div>
-                <div class="item-sub">Resource guardrail & RAM detection engine.</div>
+                <div class="item-title">workspace/summary.md</div>
+                <div class="item-sub">Generate analytical reports and documentation.</div>
               </div>
             </div>
           </div>
@@ -250,7 +259,7 @@
               <span class="perm-tag level-act">ACTIVE</span>
               <div>
                 <div class="item-title">Model Manager & RAM Sentry</div>
-                <div class="item-sub">Monitoring system headroom (~7.73 GiB RAM) & 5-min idle auto-unload.</div>
+                <div class="item-sub">Monitoring system RAM headroom & 5-min idle auto-unload.</div>
               </div>
             </div>
             <div class="modal-item">
@@ -304,24 +313,14 @@
         <!-- DROPDOWN MODAL: ALERTS -->
         <div id="alerts-modal" class="island-modal hidden">
           <div class="modal-header">
-            <span class="modal-title">▲ SYSTEM ALERTS & TELEMETRY</span>
-            <button class="modal-close" onclick="closeAllModals()">&times;</button>
+            <span class="modal-title">▲ PROFESSOR &amp; SYSTEM ALERTS</span>
+            <div style="display:flex;align-items:center;">
+              <button class="btn-alerts-clear" onclick="deleteAllAlerts()" title="Delete all notices permanently">Clear All</button>
+              <button class="modal-close" onclick="closeAllModals()">&times;</button>
+            </div>
           </div>
-          <div class="modal-body">
-            <div class="modal-item">
-              <span class="perm-tag level-act">SYSTEM</span>
-              <div>
-                <div class="item-title">Zero-Dependency Architecture</div>
-                <div class="item-sub">Native Windows ctypes RAM detection & standard library HTTP.</div>
-              </div>
-            </div>
-            <div class="modal-item">
-              <span class="perm-tag level-prep">STATUS</span>
-              <div>
-                <div class="item-title">Server Runtime: Normal</div>
-                <div class="item-sub">ThreadedTCPServer serving endpoints and real-time token stream.</div>
-              </div>
-            </div>
+          <div class="modal-body alerts-modal-container" id="alerts-modal-body">
+            <!-- Dynamically populated via app.js -->
           </div>
         </div>
 
@@ -387,8 +386,498 @@
         </div>
       </footer>
 
+      <!-- SCHEDULES & CALENDAR VIEWPORT -->
+      <section id="schedules-view" class="schedules-viewport hidden">
+        <div class="schedules-container">
+          
+          <!-- TOP CONTROLS & SYNC HEADER -->
+          <div class="schedules-header">
+            <div class="schedules-title-group">
+              <div class="schedules-kicker">◈ ACADEMIC SCHEDULES // REASONING AUTOMATION</div>
+              <h2 class="schedules-title">Schedules &amp; Deadlines</h2>
+              <div class="schedules-desc">Tracking upcoming submissions, course assignments, and academic milestones.</div>
+            </div>
+
+            <div class="schedules-actions">
+              <button id="btn-academic-config" class="btn-schedules-subtle" onclick="openAcademicConfigModal()" title="Configure academic feeds and calendars">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Feeds Setup</span>
+              </button>
+
+              <button id="btn-add-deadline-manual" class="btn-schedules-subtle" onclick="openAddDeadlineModal()" title="Add manual assignment or task">
+                <span class="btn-glyph">+</span>
+                <span>Add Task</span>
+              </button>
+
+              <!-- MAIN TRIGGER BUTTON -->
+              <button id="btn-sync-deadlines" class="btn-sync-primary" onclick="triggerAcademicSync()" title="Explore &amp; Sync academic schedules">
+                <span id="sync-spinner" class="sync-spinner hidden"></span>
+                <span id="sync-glyph" class="btn-glyph">◈</span>
+                <span id="sync-btn-label">Sync</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- SYNC STATUS BANNER -->
+          <div id="sync-status-banner" class="sync-status-banner hidden">
+            <span class="status-banner-icon">⬡</span>
+            <span id="sync-status-text" class="status-banner-text">Exploration completed successfully.</span>
+            <button class="status-banner-close" onclick="closeSyncBanner()">&times;</button>
+          </div>
+
+          <!-- INTEGRATION CONNECTION NOTICE (Visible when integration account is not linked) -->
+          <div id="teams-schedules-notice" class="teams-schedules-notice hidden">
+            <div class="notice-info">
+              <span class="notice-glyph">⬡</span>
+              <div class="notice-text-wrap">
+                <div class="notice-title">ACADEMIC INTEGRATIONS NOT LINKED</div>
+                <div class="notice-sub">Link your academic accounts via Device Code to autonomously pull class assignments &amp; calendar events.</div>
+              </div>
+            </div>
+            <button type="button" class="btn-notice-connect" onclick="openPluginConfigModal('teams')">
+              <span>Link Account ↗</span>
+            </button>
+          </div>
+
+          <!-- CALENDAR SECTION -->
+          <div class="calendar-card">
+            <div class="calendar-topbar">
+              <div class="calendar-month-nav">
+                <button class="cal-nav-btn" onclick="navCalendarMonth(-1)" title="Previous Month">&lt;</button>
+                <span id="calendar-month-label" class="calendar-month-label">OCTOBER 2026</span>
+                <button class="cal-nav-btn" onclick="navCalendarMonth(1)" title="Next Month">&gt;</button>
+                <button class="cal-today-btn" onclick="navCalendarToday()">Today</button>
+              </div>
+
+              <div class="calendar-legend">
+                <span class="legend-chip lms-chip"><span class="legend-dot dot-lms"></span> Coursework</span>
+                <span class="legend-chip teams-chip"><span class="legend-dot dot-teams"></span> Assignments</span>
+              </div>
+            </div>
+
+            <!-- Calendar 7-Day Header -->
+            <div class="calendar-weekdays-grid">
+              <div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div><div>SUN</div>
+            </div>
+
+            <!-- Calendar Days Grid (Populated dynamically) -->
+            <div id="calendar-days-grid" class="calendar-days-grid">
+              <!-- Dynamically populated via app.js -->
+            </div>
+          </div>
+
+          <!-- UPCOMING DEADLINES SECTION (Grouped by Category) -->
+          <div class="upcoming-deadlines-card">
+            <div class="upcoming-header">
+              <div class="upcoming-title-row">
+                <span class="section-glyph">▤</span>
+                <h3 class="upcoming-heading">Upcoming Deadlines &amp; Tasks</h3>
+                <span id="upcoming-total-count" class="badge-count">0 items</span>
+              </div>
+
+              <!-- Filter tabs -->
+              <div class="deadlines-filter-tabs">
+                <button class="filter-tab active" data-filter="all" onclick="filterDeadlines('all', this)">All</button>
+                <button class="filter-tab" data-filter="lms" onclick="filterDeadlines('lms', this)">Coursework</button>
+                <button class="filter-tab" data-filter="teams" onclick="filterDeadlines('teams', this)">Assignments</button>
+                <button class="filter-tab" data-filter="pending" onclick="filterDeadlines('pending', this)">Pending</button>
+                <button class="filter-tab" data-filter="completed" onclick="filterDeadlines('completed', this)">Completed</button>
+              </div>
+            </div>
+
+            <!-- Grouped Deadlines Container -->
+            <div id="grouped-deadlines-container" class="grouped-deadlines-container">
+              <!-- Populated dynamically via app.js -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PLUGINS & INTEGRATION VIEWPORT -->
+      <section id="plugins-view" class="plugins-viewport hidden">
+        <div class="plugins-container">
+          
+          <div class="plugins-header">
+            <div class="plugins-title-group">
+              <div class="plugins-kicker">◈ INTEGRATION ARSENAL // CONNECTORS</div>
+              <h2 class="plugins-title">Plugins &amp; Ecosystem</h2>
+              <div class="plugins-desc">Link external platforms to Meera: College LMS, Microsoft Teams, GitHub, and custom MCP tool servers.</div>
+            </div>
+
+            <div class="plugins-actions">
+              <button class="btn-plugins-primary" onclick="openPluginConfigModal('lms')">
+                <span class="btn-glyph">◈</span>
+                <span>Configure Feeds</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Plugins Cards Grid -->
+          <div class="plugins-grid" id="plugins-grid">
+            <!-- Dynamically populated via app.js -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- LIBRARY & PDF STORAGE VIEWPORT -->
+      <section id="library-view" class="library-viewport hidden">
+        <div class="library-container">
+          
+          <div class="library-header">
+            <div class="library-title-group">
+              <div class="library-kicker">▤ KNOWLEDGE VAULT // DOCUMENT ARCHIVE</div>
+              <h2 class="library-title">Library &amp; Documents</h2>
+              <div class="library-desc">Store, index, and reference university PDFs, lecture slide decks, syllabus outlines, and lab manuals.</div>
+            </div>
+
+            <div class="library-actions">
+              <button class="btn-library-upload" onclick="openLibraryUploadModal()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span>Upload PDF / File</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Library Search & Filter Bar -->
+          <div class="library-filter-bar">
+            <div class="library-search-box">
+              <span class="search-glyph">▤</span>
+              <input type="text" id="library-search-input" placeholder="Search by title, filename, course tag..." oninput="debounceLibrarySearch()" />
+            </div>
+
+            <div class="library-filter-chips">
+              <button class="lib-filter-btn active" data-type="all" onclick="filterLibraryType('all', this)">All Documents</button>
+              <button class="lib-filter-btn" data-type="pdf" onclick="filterLibraryType('pdf', this)">PDFs</button>
+              <button class="lib-filter-btn" data-type="txt" onclick="filterLibraryType('txt', this)">Notes</button>
+              <button class="lib-filter-btn" data-type="md" onclick="filterLibraryType('md', this)">Markdown</button>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Dropzone -->
+          <div class="library-dropzone" id="library-dropzone" onclick="document.getElementById('library-file-input').click()">
+            <input type="file" id="library-file-input" style="display:none" onchange="handleFileSelect(event)" accept=".pdf,.txt,.md,.doc,.docx,.json,.py,.csv" />
+            <div class="dropzone-icon">▤</div>
+            <div class="dropzone-title">Drop PDF or Document to store in Library</div>
+            <div class="dropzone-sub">Supported: PDF, Markdown, Text, Code files (Zero-bloat local storage)</div>
+          </div>
+
+          <!-- Stored Documents Grid / List -->
+          <div class="library-items-grid" id="library-items-grid">
+            <!-- Dynamically populated via app.js -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ALERTS & PROFESSOR NOTICES VIEWPORT -->
+      <section id="alerts-view" class="alerts-viewport hidden">
+        <div class="alerts-container">
+          
+          <div class="alerts-header">
+            <div class="alerts-title-group">
+              <div class="alerts-kicker">▲ PROFESSOR &amp; COURSE SENTINEL // NOTICES</div>
+              <h2 class="alerts-title">Alerts &amp; Announcements</h2>
+              <div class="alerts-desc">Real-time sentry monitoring active course channels for assignment deadlines, tests, and schedule changes from the past week.</div>
+            </div>
+
+            <div class="alerts-actions">
+              <button class="btn-alerts-clear-main" onclick="markAllAlertsRead()" title="Dismiss and mark all as read">
+                <span>Mark All As Read</span>
+              </button>
+              <button class="btn-alerts-delete-all" onclick="deleteAllAlerts()" title="Delete all notices permanently">
+                <span>✕ Delete All</span>
+              </button>
+              <button id="btn-alerts-refresh" class="btn-sync-primary" onclick="refreshAlertsNow(this)" title="Scan course channels now">
+                <span id="alerts-refresh-spinner" class="inline-spinner hidden"></span>
+                <span id="alerts-refresh-glyph" class="btn-glyph">◈</span>
+                <span id="alerts-refresh-label">Refresh</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Alerts Filter Bar -->
+          <div class="alerts-filter-bar">
+            <div class="alerts-filter-chips">
+              <button class="alert-filter-btn active" data-filter="all" onclick="filterAlerts('all', this)">All (Past Week)</button>
+              <button class="alert-filter-btn" data-filter="unread" onclick="filterAlerts('unread', this)">Unread</button>
+            </div>
+            <span id="alerts-page-total-count" class="badge-count">0 notices</span>
+          </div>
+
+          <!-- Stored Alerts Grid -->
+          <div class="alerts-grid-page" id="alerts-page-grid">
+            <!-- Dynamically populated via app.js -->
+          </div>
+
+        </div>
+      </section>
+
     </div>
 
+  </div>
+
+  <!-- CONFIRMATION MODAL: VERIFY CHAT DELETION -->
+  <div id="modal-confirm-delete" class="custom-modal-overlay hidden">
+    <div class="custom-modal-dialog">
+      <div class="modal-header">
+        <span class="modal-title">▲ CONFIRM DELETION</span>
+        <button class="modal-close" onclick="closeDeleteConfirmModal()">&times;</button>
+      </div>
+      <div class="modal-dialog-body">
+        <p>Are you sure you want to delete <strong id="delete-chat-title-preview">this conversation</strong>?</p>
+        <p class="modal-dialog-warning">All messages, observations, and context in this session will be permanently erased.</p>
+      </div>
+      <div class="modal-dialog-actions">
+        <button class="btn-dialog-cancel" onclick="closeDeleteConfirmModal()">Cancel</button>
+        <button id="btn-dialog-confirm-delete" class="btn-dialog-danger">Delete Conversation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CREATE NEW PROJECT -->
+  <div id="modal-create-project" class="custom-modal-overlay hidden">
+    <div class="custom-modal-dialog">
+      <div class="modal-header">
+        <span class="modal-title">⬡ CREATE NEW PROJECT</span>
+        <button class="modal-close" onclick="closeCreateProjectModal()">&times;</button>
+      </div>
+      <div class="modal-dialog-body">
+        <div class="form-group">
+          <label class="form-label">PROJECT NAME</label>
+          <input id="project-name-input" type="text" class="form-input" placeholder="e.g. Agent Architecture Research" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">DESCRIPTION (OPTIONAL)</label>
+          <input id="project-desc-input" type="text" class="form-input" placeholder="e.g. Workflows and experiments" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">COLOR ACCENT</label>
+          <div class="color-picker-row">
+            <button class="color-swatch-btn active" style="--swatch:#A3E635" data-color="#A3E635" onclick="selectProjectColor('#A3E635', this)"></button>
+            <button class="color-swatch-btn" style="--swatch:#818CF8" data-color="#818CF8" onclick="selectProjectColor('#818CF8', this)"></button>
+            <button class="color-swatch-btn" style="--swatch:#FDE047" data-color="#FDE047" onclick="selectProjectColor('#FDE047', this)"></button>
+            <button class="color-swatch-btn" style="--swatch:#38BDF8" data-color="#38BDF8" onclick="selectProjectColor('#38BDF8', this)"></button>
+            <button class="color-swatch-btn" style="--swatch:#FB7185" data-color="#FB7185" onclick="selectProjectColor('#FB7185', this)"></button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-dialog-actions">
+        <button class="btn-dialog-cancel" onclick="closeCreateProjectModal()">Cancel</button>
+        <button id="btn-submit-create-project" class="btn-dialog-confirm" onclick="submitCreateProject()">Create Project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRMATION MODAL: VERIFY PROJECT DELETION -->
+  <div id="modal-confirm-delete-project" class="custom-modal-overlay hidden">
+    <div class="custom-modal-dialog">
+      <div class="modal-header">
+        <span class="modal-title">▲ CONFIRM PROJECT DELETION</span>
+        <button class="modal-close" onclick="closeDeleteProjectConfirmModal()">&times;</button>
+      </div>
+      <div class="modal-dialog-body">
+        <p>Are you sure you want to delete project <strong id="delete-project-title-preview">this project</strong>?</p>
+        <p class="modal-dialog-warning">Chats inside this project will be ungrouped and moved to General.</p>
+      </div>
+      <div class="modal-dialog-actions">
+        <button class="btn-dialog-cancel" onclick="closeDeleteProjectConfirmModal()">Cancel</button>
+        <button id="btn-dialog-confirm-delete-project" class="btn-dialog-danger">Delete Project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT CONTEXT MENU (ChatGPT Dropdown Menu) -->
+  <div id="chat-context-menu" class="chat-context-menu hidden">
+    <button class="context-menu-item" id="menu-action-rename">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+      <span>Rename</span>
+    </button>
+    <button class="context-menu-item" id="menu-action-pin">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.89A2 2 0 0 1 15 10.77V6a3 3 0 0 0-6 0v4.77a2 2 0 0 1-1.11 1.79l-1.78.89A2 2 0 0 0 5 15.24Z"></path></svg>
+      <span id="menu-pin-label">Pin</span>
+    </button>
+    <div class="context-menu-divider"></div>
+    <div class="context-menu-item-wrapper" id="menu-move-wrapper">
+      <button class="context-menu-item has-submenu" id="menu-action-move">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        <span>Move to project</span>
+        <span class="submenu-caret">›</span>
+      </button>
+      <div id="project-submenu" class="context-submenu-flyout hidden">
+        <!-- Populated dynamically with projects list -->
+      </div>
+    </div>
+    <button class="context-menu-item danger" id="menu-action-delete">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+      <span>Delete</span>
+    </button>
+  </div>
+
+  <!-- PROJECT CONTEXT MENU (Dropdown on Click) -->
+  <div id="project-context-menu" class="chat-context-menu hidden">
+    <button class="context-menu-item" id="pmenu-action-rename">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+      <span>Rename project</span>
+    </button>
+    <div class="context-menu-divider"></div>
+    <button class="context-menu-item danger" id="pmenu-action-delete">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+      <span>Delete project</span>
+    </button>
+  </div>
+
+  <!-- MODAL: RENAME PROJECT -->
+  <div id="modal-rename-project" class="custom-modal-overlay hidden">
+    <div class="custom-modal-dialog">
+      <div class="modal-header">
+        <span class="modal-title">✎ RENAME PROJECT</span>
+        <button class="modal-close" onclick="closeRenameProjectModal()">&times;</button>
+      </div>
+      <div class="modal-dialog-body">
+        <div class="form-group">
+          <label class="form-label">NEW PROJECT NAME</label>
+          <input id="project-rename-input" type="text" class="form-input" placeholder="e.g. Meera Engine" />
+        </div>
+      </div>
+      <div class="modal-dialog-actions">
+        <button class="btn-dialog-cancel" onclick="closeRenameProjectModal()">Cancel</button>
+        <button id="btn-submit-rename-project" class="btn-dialog-confirm" onclick="submitRenameProject()">Save Title</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIGURE ACADEMIC FEEDS (LMS & MS TEAMS) -->
+  <div id="modal-academic-config" class="custom-modal-overlay hidden">
+    <div class="custom-modal-dialog modal-dialog-lg">
+      <div class="modal-header">
+        <span class="modal-title">⚙ ACADEMIC SURFER // FEED &amp; AUTH CONFIGURATION</span>
+        <button class="modal-close" onclick="closeAcademicConfigModal()">&times;</button>
+      </div>
+      <div class="modal-dialog-body">
+        <p class="modal-dialog-subtext">
+          Configure your College LMS and Microsoft Teams calendar feeds or session tokens. Meera connects with pure standard-library HTTP without third-party scrapers.
+        </p>
+
+        <div class="config-section-title">◈ COLLEGE LMS PORTAL</div>
+        <div class="form-group">
+          <label class="form-label">CALENDAR FEED URL (iCal / .ics)</label>
+          <input id="cfg-lms-url" type="text" class="form-input" placeholder="e.g. https://lms.college.edu/calendar/export_execute.php?preset_what=all&preset_time=recentupcoming" />
+          <div class="form-hint">Tip: On Moodle/Canvas/Blackboard, click 'Export Calendar' &gt; 'Get Calendar URL' to copy the .ics link.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">SESSION COOKIE / AUTH HEADER (OPTIONAL)</label>
+          <input id="cfg-lms-cookie" type="text" class="form-input" placeholder="e.g. MoodleSession=abc12345xyz; or sessionid=..." />
+          <div class="form-hint">Required only if your university portal blocks public iCal token feeds.</div>
+        </div>
+
+        <div class="config-section-title">⬡ MICROSOFT TEAMS / OUTLOOK</div>
+        <div class="form-group">
+          <label class="form-label">TEAMS CALENDAR / WEBCAL FEED URL</label>
+          <input id="cfg-teams-url" type="text" class="form-input" placeholder="e.g. webcal://outlook.office365.com/owa/calendar/your_id/reachcalendar.ics" />
+          <div class="form-hint">In Outlook Web or MS Teams, share/publish calendar as iCal to retrieve this URL.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">TEAMS SESSION COOKIE (OPTIONAL)</label>
+          <input id="cfg-teams-cookie" type="text" class="form-input" placeholder="Optional session token for internal tenant endpoints" />
+        </div>
+      </div>
+      <div class="modal-dialog-actions">
+        <button class="btn-dialog-cancel" onclick="closeAcademicConfigModal()">Cancel</button>
+        <button id="btn-submit-academic-config" class="btn-dialog-confirm" onclick="saveAcademicConfig()">Save Configuration</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD MANUAL TASK / DEADLINE -->
+  <div id="modal-add-deadline" class="custom-modal-overlay hidden">
+    <div class="custom-modal-dialog">
+      <div class="modal-header">
+        <span class="modal-title">+ ADD TASK OR DEADLINE</span>
+        <button class="modal-close" onclick="closeAddDeadlineModal()">&times;</button>
+      </div>
+      <div class="modal-dialog-body">
+        <div class="form-group">
+          <label class="form-label">TASK / ASSIGNMENT TITLE</label>
+          <input id="manual-deadline-title" type="text" class="form-input" placeholder="e.g. Project Phase 2 Report" />
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">CATEGORY</label>
+            <select id="manual-deadline-platform" class="form-select">
+              <option value="lms">Coursework</option>
+              <option value="teams">Assignments</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">DUE DATE &amp; TIME</label>
+            <input id="manual-deadline-due" type="datetime-local" class="form-input" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">COURSE / TEAM GROUP NAME</label>
+          <input id="manual-deadline-group" type="text" class="form-input" placeholder="e.g. CS401: Compiler Design or Team: OS Lab" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">DESCRIPTION (OPTIONAL)</label>
+          <textarea id="manual-deadline-desc" class="form-textarea" rows="2" placeholder="Submission requirements or notes"></textarea>
+        </div>
+      </div>
+      <div class="modal-dialog-actions">
+        <button class="btn-dialog-cancel" onclick="closeAddDeadlineModal()">Cancel</button>
+        <button id="btn-submit-add-deadline" class="btn-dialog-confirm" onclick="submitAddDeadline()">Create Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PLUGIN CONFIGURATION -->
+  <div id="modal-plugin-config" class="custom-modal-overlay hidden">
+    <div class="custom-modal-dialog modal-dialog-lg">
+      <div class="modal-header">
+        <span class="modal-title" id="plugin-modal-title">⚙ PLUGIN CONFIGURATION</span>
+        <button class="modal-close" onclick="closePluginConfigModal()">&times;</button>
+      </div>
+      <div class="modal-dialog-body" id="plugin-modal-body">
+        <!-- Populated dynamically via app.js -->
+      </div>
+      <div class="modal-dialog-actions">
+        <button class="btn-dialog-cancel" onclick="closePluginConfigModal()">Cancel</button>
+        <button id="btn-submit-plugin-config" class="btn-dialog-confirm" onclick="submitPluginConfig()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: UPLOAD DOCUMENT TO LIBRARY -->
+  <div id="modal-library-upload" class="custom-modal-overlay hidden">
+    <div class="custom-modal-dialog">
+      <div class="modal-header">
+        <span class="modal-title">↑ UPLOAD TO LIBRARY</span>
+        <button class="modal-close" onclick="closeLibraryUploadModal()">&times;</button>
+      </div>
+      <div class="modal-dialog-body">
+        <div class="form-group">
+          <label class="form-label">SELECT FILE</label>
+          <input type="file" id="modal-upload-file-input" class="form-input" accept=".pdf,.txt,.md,.doc,.docx,.json,.py,.csv" onchange="onModalFileChosen(event)" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">DOCUMENT TITLE</label>
+          <input id="upload-doc-title" type="text" class="form-input" placeholder="e.g. Compiler Design Lab Manual 2026" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">TAGS / COURSE (COMMA SEPARATED)</label>
+          <input id="upload-doc-tags" type="text" class="form-input" placeholder="e.g. CS401, Lab, Semester 7" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">DESCRIPTION (OPTIONAL)</label>
+          <textarea id="upload-doc-desc" class="form-textarea" rows="2" placeholder="Brief notes or summary"></textarea>
+        </div>
+      </div>
+      <div class="modal-dialog-actions">
+        <button class="btn-dialog-cancel" onclick="closeLibraryUploadModal()">Cancel</button>
+        <button id="btn-submit-library-upload" class="btn-dialog-confirm" onclick="submitLibraryUpload()">Upload Document</button>
+      </div>
+    </div>
   </div>
 
   <script src="/ui/app.js"></script>
