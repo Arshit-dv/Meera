@@ -2,8 +2,8 @@
 
 ```
 ================================================================================
-MEERA (PERSONAL AI AGENT ARCHITECTURE)
-Target: Windows 11 // ASUS TUF Gaming F17 // Local-First // Resource-Conscious
+MEERA (ENTERPRISE EDGE AI AGENT ARCHITECTURE)
+Target: Windows 10/11 & Server // Edge Computing // Local-First // Resource-Conscious
 Specification: Zero Third-Party Web Dependencies // Pure Python Standard Library
 ================================================================================
 ```
@@ -12,7 +12,7 @@ Specification: Zero Third-Party Web Dependencies // Pure Python Standard Library
 
 ## 1. Executive Summary & Vision
 
-**Meera** is an autonomous, modular, local-first personal AI agent engineered from scratch to run efficiently on resource-constrained Windows hardware. Unlike heavy cloud-dependent systems or resource-bloated Python stacks, Meera adheres to a **zero third-party web dependency** rule, using Python's standard library for its networking, process lifecycle, persistent SQLite memory, and operating system bindings.
+**Meera** is an autonomous, modular, local-first enterprise AI agent engineered from scratch to run efficiently on resource-constrained edge hardware and developer workstations. Unlike heavy cloud-dependent systems or resource-bloated Python stacks, Meera adheres to a **zero third-party web dependency** rule, using Python's standard library for its networking, process lifecycle, persistent SQLite memory, and operating system bindings.
 
 Meera provides a fast, privacy-preserving, OpenAI-compatible local API server alongside an interface built with clean Vanilla HTML/CSS/JS, featuring a Top Floating Island, an Agent Command Center sidebar, and an Obsidian Dark aesthetic.
 
@@ -20,21 +20,21 @@ Meera provides a fast, privacy-preserving, OpenAI-compatible local API server al
 
 ## 2. Hardware Constraints & Operational Guardrails
 
-All architecture decisions in Meera are strictly tailored to the host system profile:
+All architecture decisions in Meera are tailored for high-efficiency edge execution and workstation deployments:
 
 | Metric / Component | Specification | Operational Constraint |
 | :--- | :--- | :--- |
-| **Machine** | ASUS TUF Gaming F17 | Windows 11 64-bit |
-| **CPU** | Intel Core i5-11400H @ 2.70GHz | 6 Cores, 12 Threads (Thread allocation capped at 4) |
-| **System RAM** | ~7.73 GiB Usable | Model loading blocked if available RAM < 2.0 GiB |
-| **GPU / VRAM** | NVIDIA GeForce RTX 2050 (4 GB GDDR6) | Dedicated VRAM budget: ~2.5 GB max for weights + KV cache |
-| **CUDA Driver** | CUDA 12.4 | `llama-server.exe` (CUDA 12 release build) |
+| **Operating System** | Windows 10/11 / Windows Server (64-bit) | Win32 API kernel integration via `ctypes` |
+| **CPU Architecture** | x86_64 Multi-Core (4+ Cores) | Inference allocation capped at 4 worker threads (preserving system responsiveness) |
+| **System Memory** | 8 GB - 16+ GB RAM | Model loading blocked if available system RAM < 2.0 GiB |
+| **GPU / VRAM** | NVIDIA GPU (CUDA 12+) / 4 GB - 8+ GB VRAM | Dedicated VRAM budget: ~2.5 GB reserved for weights + KV cache under 1024 context |
+| **Inference Engine** | `llama-server.exe` (CUDA 12 release build) | Quantized GGUF models (Q4_K_M / INT8) |
 
 ### Memory & Process Guardrails
 1. **Native Windows RAM Sentry**: Uses `ctypes.windll.kernel32.GlobalMemoryStatusEx` for zero-overhead, sub-millisecond RAM checks.
-2. **5-Minute Idle Auto-Unload**: If no generation requests are received for 300 seconds, `ModelManager` unloads `llama-server.exe` to return ~1.5 GB VRAM and system memory back to Windows.
-3. **Context Length Ceiling**: Context is locked at **1024 tokens** to prevent KV-cache VRAM explosion on the RTX 2050. `AgentCore` enforces a multi-turn sliding window history.
-4. **CPU Thread Allocation**: Inference threads are hard-capped at `4` threads, leaving 2 physical cores and 8 hyperthreads free for Windows desktop responsiveness and DWM.
+2. **5-Minute Idle Auto-Unload**: If no generation requests are received for 300 seconds, `ModelManager` unloads `llama-server.exe` to return ~1.5 GB - 2.5 GB VRAM and system memory back to the host operating system.
+3. **Context Length Ceiling**: Context is locked at **1024 tokens** to guarantee deterministic throughput and prevent KV-cache VRAM explosion on entry-level GPUs. `AgentCore` enforces a multi-turn sliding window history.
+4. **CPU Thread Allocation**: Inference threads are hard-capped at `4` threads, leaving remaining CPU cores free for host desktop and background services.
 
 ---
 
@@ -119,7 +119,7 @@ Meera/
 - **Pre-Warming**: Running on-demand loading in a background thread on server startup completely eliminates the cold-start delay for the first user query while keeping the server responsive immediately.
 
 ### B. Token Budget Allocation (1024 Token Context Ceiling)
-Because RTX 2050 has a 4 GB GDDR6 ceiling, context length is strictly capped at 1024 tokens. The context is partitioned deterministically:
+To guarantee high throughput, deterministic latency, and zero Out-Of-Memory (OOM) faults across resource-constrained edge hardware, context length is capped at 1024 tokens. The context is partitioned deterministically:
 - **System Persona**: ~120 tokens.
 - **Long-Term Memory Injection**: ~100 tokens (up to 5 verified user facts/preferences).
 - **Session Summary Checkpoint**: ~150 tokens (extractive or model-generated summary of prior turns).
@@ -192,7 +192,7 @@ Because RTX 2050 has a 4 GB GDDR6 ceiling, context length is strictly capped at 
 ## 6. Development Roadmap & Phase Status
 
 - [x] **Phase 0: Runtime Verification & Model Baselines**
-  - Confirmed `llama.cpp` CUDA 12 execution on RTX 2050.
+  - Confirmed `llama.cpp` CUDA 12 execution on dedicated edge GPU acceleration.
   - Locked `Qwen3-1.7B-Q4_K_M.gguf` as default baseline model at 1024 context.
 
 - [x] **Phase 1: Agent Core & Model Provider Architecture**

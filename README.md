@@ -1,17 +1,17 @@
-# MEERA — Autonomous Personal AI Agent & Local Edge Architecture
+# MEERA — Autonomous Edge AI Agent & Local-First Intelligence Platform
 
 ```
 ================================================================================
-MEERA (PERSONAL AI AGENT ARCHITECTURE)
+MEERA: PRODUCTION-GRADE ON-DEVICE AI AGENT & EDGE INFERENCE RUNTIME
 Local-First // Zero Third-Party Web Dependencies // Pure Python Standard Library
-Target: Windows 11 (64-bit) // NVIDIA CUDA 12 // Intel Core i5 // RTX 2050
-Specifications: 1024 Token Budget // SQLite WAL Engine // Native Win32 Sentry
+Deployment Baseline: Windows 10/11 & Server // NVIDIA CUDA 12+ // Cross-Platform Fallback
+Architecture: On-Device LLM Reasoning // Deterministic Token Budgeting // SQLite WAL
 ================================================================================
 ```
 
-**Meera** is an autonomous, local-first personal AI agent engineered from scratch to deliver high-performance LLM reasoning, multi-session persistent memory, guardrailed tool execution, and multi-agent task orchestration on consumer-grade hardware. 
+**Meera** is an autonomous, local-first artificial intelligence agent and edge inference runtime engineered for high-performance reasoning, deterministic memory management, guardrailed tool execution, and multi-agent task orchestration in resource-constrained enterprise and edge environments.
 
-Built under a strict **zero third-party web dependency** rule, Meera requires no external web frameworks (no Flask, FastAPI, Uvicorn, or Node.js). Its complete networking layer, process supervisor, database persistence, and operating system bindings are implemented entirely with the Python standard library.
+Engineered under a strict **zero third-party web dependency** architectural principle, Meera eliminates external runtime bloat (no Flask, FastAPI, Uvicorn, or Node.js). Its complete networking layer, process lifecycle supervisor, persistent database engine, and operating system bindings are implemented entirely utilizing the Python standard library. Meera provides strict data sovereignty, ensuring zero data exfiltration for compliance-critical deployments (HIPAA, GDPR, FERPA) while maintaining drop-in compatibility with the official OpenAI API specification.
 
 ---
 
@@ -28,13 +28,13 @@ Built under a strict **zero third-party web dependency** rule, Meera requires no
 |                                 NATIVE SYSTEM NETWORKING LAYER                                    |
 |                       http.server // socketserver.ThreadingMixIn (Port 8000)                      |
 |   - OpenAI Spec (/v1/chat/completions, /v1/models)     - Meera REST API (/api/*)                  |
-|   - Token-by-Token SSE Chunk Streamer                  - Static Asset Deployer                    |
+|   - Token-by-Token SSE Chunk Streamer                  - Static Asset Deployer & CORS Middleware  |
 +-------------------------------------------------+-------------------------------------------------+
                                                   |
                                                   v
 +---------------------------------------------------------------------------------------------------+
 |                                  AGENT CORE & REASONING ENGINE                                    |
-|   - Multi-Turn Sliding Window History                  - Token Budget Allocator (1024 Ceiling)    |
+|   - Multi-Turn Sliding Window History                  - Deterministic Token Allocator (1024 Max) |
 |   - Zero-Overhead Skills Intent Router                 - Context Summarization Checkpoints        |
 +-------------------+-----------------------------+-----------------------------+-------------------+
                     |                             |                             |
@@ -42,19 +42,20 @@ Built under a strict **zero third-party web dependency** rule, Meera requires no
 +-----------------------------+  +----------------------------+  +----------------------------------+
 |    MODEL INFERENCE ENGINE   |  |   GUARDRAILED EXECUTION    |  |     PERSISTENT WAL STORAGE       |
 |  - Subprocess Supervisor    |  |  - [READ] Workspace FS     |  |  - SQLite WAL (memory.db)        |
-|  - Win32 RAM Sentry         |  |  - [PREPARE] Python REPL   |  |  - Sessions & Transcripts        |
+|  - Win32 Kernel RAM Sentry  |  |  - [PREPARE] Python REPL   |  |  - Sessions & Transcripts        |
 |    (GlobalMemoryStatusEx)   |  |  - [ACT] Shell Commands    |  |  - Long-Term User Facts          |
-|  - 300s Idle Auto-Reaper    |  |    (Human Approval Token)  |  |  - Academic Deadlines & Tasks    |
-|  - llama-server.exe CUDA 12 |  |  - Native JSON-RPC MCP     |  |  - Channel Announcements Sentry  |
-|    (Qwen 1.7B / 4-bit GGUF) |  |    Client Adapter (stdio)  |  |  - Foreign Key Cascade Cleanup   |
+|  - 300s Idle Auto-Reaper    |  |    (Human Approval Token)  |  |  - Project Workspaces & Notes    |
+|  - llama-server.exe CUDA 12 |  |  - Native JSON-RPC MCP     |  |  - Coursework Deadlines & Tasks  |
+|    (Quantized GGUF Models)  |  |    Client Adapter (stdio)  |  |  - Channel Announcements Sentry  |
 +-----------------------------+  +----------------------------+  +----------------------------------+
                                                   ^
                                                   |
 +-------------------------------------------------+-------------------------------------------------+
 |                                SPECIALIZED CAPABILITY SUBSYSTEMS                                  |
 |  - TaskScheduler: Micro-threaded background daemon worker & recurring cron scheduler              |
-|  - AcademicSurfer: Zero-dependency iCalendar (.ics) and university feed synchronization           |
+|  - AcademicSurfer: Zero-dependency iCalendar (RFC 5545) & university feed synchronizer            |
 |  - TeamsConnector: Microsoft OAuth2 Device Code grant (RFC 8628) & channel announcements sentry  |
+|  - KnowledgeVault: Persistent local document archive with base64 streaming & context injection    |
 |  - MultiAgentOrchestrator: Isolated sub-agent context windows & executive report synthesis        |
 +---------------------------------------------------------------------------------------------------+
 ```
@@ -77,7 +78,7 @@ sequenceDiagram
     Core->>Memory: Retrieve Sliding Window (Last 6 turns) + Long-Term Facts
     Memory-->>Core: Context Window Checkpoint (~350 tokens)
     Core->>Model: Request Generation (Headroom: 300 tokens)
-    Model->>Model: Query GlobalMemoryStatusEx (RAM >= 2.0 GB Check)
+    Model->>Model: Query GlobalMemoryStatusEx (RAM Safety Check >= 2.0 GB)
     alt llama-server inactive
         Model->>Llama: Spawn Subprocess (llama-server.exe --ctx 1024 -ngl 999)
         Llama-->>Model: Ready on Port 8081
@@ -91,7 +92,7 @@ sequenceDiagram
     opt Tool Call Detected ([READ] / [PREPARE] / [ACT])
         Core->>Tools: Parse Signature & Evaluate Permission Tier
         alt Tier == ACT
-            Tools-->>User: Generate Confirmation Token & Prompt Approval
+            Tools-->>User: Generate Cryptographic Confirmation Token & Request Approval
             User->>Server: POST /api/tools/approve
         end
         Tools->>Tools: Execute Action Sandboxed in workspace/
@@ -101,45 +102,54 @@ sequenceDiagram
     end
 
     Core->>Memory: Persist Messages & Update Session Timestamp
-    Note over Model: 300s Inactivity Timer -> Unload llama-server.exe (Release VRAM)
+    Note over Model: 300s Inactivity Timer -> Unload llama-server.exe (Release VRAM/RAM)
 ```
+
+---
+
+## ⬡ Target Hardware Deployment Profiles & Resource Governance
+
+Meera is optimized for edge nodes, developer workstations, and enterprise on-premises micro-servers:
+
+| Deployment Profile | Hardware Baseline | Resource Enforcement Policy |
+| :--- | :--- | :--- |
+| **Edge Gateway / Embedded** | 4 Cores, 8 GB System RAM, Integrated / Entry GPU | Sub-millisecond Win32 RAM sentry blocks inference if system RAM < 2.0 GiB; KV-cache locked to 1024 tokens. |
+| **Developer Workstation** | 6-8 Cores, 8-16 GB System RAM, Dedicated GPU (4 GB - 8 GB VRAM) | Inference capped at 4 CPU threads (preserving host OS and DWM responsiveness); weights + KV-cache allocated ~2.5 GB dedicated VRAM budget. |
+| **Production Edge Server** | 8+ Cores, 16+ GB System RAM, NVIDIA CUDA 12+ / Tensor Cores | High-throughput local SSE streaming; automated 300-second idle auto-unloader returning VRAM and system memory back to the host operating system. |
+
+### Memory & Process Guardrails
+1. **Native Win32 Kernel RAM Sentry**: Direct operating system memory interrogation via `ctypes.windll.kernel32.GlobalMemoryStatusEx` for zero-overhead, sub-millisecond RAM safety checks before model activation.
+2. **5-Minute Idle Auto-Reclamation**: If no generation requests are received for 300 seconds, `ModelManager` cleanly terminates the `llama-server.exe` process group, releasing ~1.5 GB to 2.5 GB of VRAM back to the host GPU driver.
+3. **Deterministic Token Budgeting (1024 Context Ceiling)**: To guarantee low latency and zero Out-Of-Memory (OOM) faults on entry-level edge accelerators, context is deterministically budgeted:
+   - **System Persona**: ~120 tokens
+   - **Long-Term Memory Store**: ~100 tokens (up to 5 verified user facts/preferences)
+   - **Session Summary Checkpoint**: ~150 tokens (extractive or model-generated checkpoint)
+   - **Sliding Message Window**: ~350 tokens (last 6 conversation turns preserved verbatim)
+   - **Generation Headroom**: ~300 tokens reserved for model completion
+   - **Token Estimation Heuristic**: Standard library approximation: `max(len(text)/3.5, len(text.split())*1.3) + 1` (eliminates heavy external tokenizers).
+4. **CPU Thread Allocation & Core Affinity**: Inference threads are hard-capped at 4 threads, leaving hyperthreads free for system operations and smooth user interface rendering.
 
 ---
 
 ## ⬡ Core Competencies & ATS Keyword Taxonomy
 
-For technical recruiters and engineering hiring managers, Meera demonstrates competencies across systems engineering, distributed architecture, and artificial intelligence:
+Meera demonstrates full-stack systems engineering, distributed edge computing, and applied artificial intelligence competencies:
 
-| Domain | Industry Keywords & ATS Competencies | Implementation in Meera |
+| Domain | Industry Keywords & ATS Competencies | Production Implementation in Meera |
 | :--- | :--- | :--- |
-| **Artificial Intelligence & LLMs** | Large Language Models (LLMs), AI Agents, Edge AI, On-Device AI, Quantization (GGUF, 4-bit, Q4_K_M), Model Context Protocol (MCP), Context Window Engineering, Token Budgeting, Sliding Window Attention, Extractive Summarization, Multi-Agent Orchestration. | Designed a complete local agent runtime running quantized models under a strict 1024 context ceiling on an NVIDIA RTX 2050 (4 GB GDDR6). |
-| **Systems & OS Internals** | Win32 API Interoperability, `ctypes`, Process Lifecycle Management, Subprocess Supervisors, Memory Sentry, Out-Of-Memory (OOM) Prevention, Process Groups, Job Objects, Resource Reclamation, CPU Thread Allocation. | Direct Windows kernel monitoring via `GlobalMemoryStatusEx`; subprocess group cleanup; automatic 300-second idle VRAM/RAM reclamation. |
-| **Backend & Network Systems** | RESTful API Engineering, OpenAI API Specification, Server-Sent Events (SSE), Socket Programming, Multi-Threading, Thread Pools, Event-Driven Architecture, Micro-Daemons, Cron Job Schedulers. | Zero third-party web dependencies. Built natively with Python's `http.server`, `socketserver.ThreadingMixIn`, and low-level streaming socket wrappers. |
-| **Security & Authorization** | Least Privilege Security, Human-in-the-Loop (HITL), Guardrailed Execution, Sandbox Isolation, Path Traversal Defense, OAuth 2.0 Device Authorization Grant (RFC 8628), Token Lifecycle Management. | Three-tier security permissions (`READ`, `PREPARE`, `ACT`); cryptographic confirmation tokens; workspace boundary jail; silent OAuth token renewal. |
-| **Database & Persistence** | Relational Database Design, SQLite WAL (Write-Ahead Logging), Thread-Safe Concurrency, `RLock` Synchronization, Foreign Key Integrity, Cascading Deletions, Context Memory Checkpointing. | Multi-session SQLite architecture (`storage/memory.db`) with WAL journal mode, atomic transactions, automatic titling, and 90-day academic task pruning. |
-| **Frontend & UI Engineering** | Vanilla HTML5 / CSS3 / ES6+, Zero-Framework Architecture, Obsidian Dark Design System, CSS Grid & Flexbox, Backdrop Blur, Accessible Typography, Dynamic State Synchronization. | Custom-designed web console featuring a centered typing console, non-shifting responsive layout, month calendar matrix, and real-time alerts. |
-
----
-
-## ▤ Hardware Specifications & Runtime Guardrails
-
-All architectural choices are tailored for optimal execution on resource-constrained host hardware:
-
-| Metric | Target Specification | Operational Enforcement |
-| :--- | :--- | :--- |
-| **Host Machine** | ASUS TUF Gaming F17 | Windows 11 (64-bit) |
-| **Processor** | Intel Core i5-11400H @ 2.70GHz (6C / 12T) | Inference hard-capped at 4 threads (leaving 8 hyperthreads free for DWM and desktop responsiveness). |
-| **System Memory** | ~7.73 GiB Usable RAM | Native Win32 sentry blocks model execution if free RAM < 2.0 GiB. |
-| **Dedicated GPU** | NVIDIA GeForce RTX 2050 (4 GB GDDR6) | Model weights + KV cache constrained to ~2.5 GB dedicated VRAM budget. |
-| **CUDA Driver** | CUDA 12.4 | `llama-server.exe` compiled with CUDA 12 architecture optimizations. |
-| **Default Model** | `Qwen3-1.7B-Q4_K_M.gguf` | Quantized 4-bit weights (~1.2 GB disk footprint, fast token generation). |
+| **Artificial Intelligence & LLMs** | Large Language Models (LLMs), Autonomous AI Agents, Edge AI, On-Device AI, Quantization (GGUF, 4-bit, Q4_K_M, INT8), llama.cpp Runtime, CUDA 12 Hardware Acceleration, Model Context Protocol (MCP), Context Window Engineering, Token Budgeting, Sliding Window Attention, Extractive Summarization, Multi-Agent Orchestration, Sub-Agent Context Isolation, Agentic Workflows. | Built a complete local agent runtime running quantized models under a deterministic 1024 token budget with sub-agent isolation and multi-step orchestration. |
+| **Low-Latency Systems & OS Internals** | Win32 API Interoperability, `ctypes`, Process Lifecycle Management, Subprocess Supervisors, Kernel Memory Sentries, Out-Of-Memory (OOM) Mitigation, Process Groups, Job Objects, Resource Reclamation, CPU Thread Throttling, Daemon Threads. | Direct Windows kernel monitoring via `GlobalMemoryStatusEx`; subprocess group lifecycle management; automated 300-second idle VRAM/RAM reclamation. |
+| **Backend & Network Systems** | RESTful API Engineering, OpenAI API Specification Drop-in Compatibility, Server-Sent Events (SSE), HTTP/1.1 Chunked Transfer Encoding, Socket Programming, Multi-Threading, Thread Pools, Event-Driven Architecture, Micro-Daemons, Cron Job Schedulers. | Zero third-party web dependencies. Built natively with Python's standard library `http.server`, `socketserver.ThreadingMixIn`, and low-level streaming socket wrappers. |
+| **Security, Auth & Governance** | Least-Privilege Architecture, Human-in-the-Loop (HITL), Guardrailed Execution, Sandbox Isolation, Path Traversal Defense, OAuth 2.0 Device Authorization Grant (RFC 8628), Token Lifecycle Management, Silent Token Refresh, Zero Cloud Exfiltration (Local Data Sovereignty). | Three-tier security permissions (`READ`, `PREPARE`, `ACT`); cryptographic confirmation tokens; workspace boundary jail; silent OAuth token renewal. |
+| **Database & Persistence** | Relational Database Design, SQLite WAL (Write-Ahead Logging), ACID Compliance, Thread-Safe Concurrency, `RLock` Synchronization, Foreign Key Cascading Deletions, Context Memory Checkpointing, 90-Day Retention Policies, Tombstone Records. | Multi-session SQLite architecture (`storage/memory.db`) with WAL journal mode, atomic transactions, automatic titling, and 90-day academic task pruning. |
+| **Frontend & UI/UX Engineering** | Vanilla HTML5 / CSS3 / ES6+, Zero-Framework Architecture, Obsidian Dark Design System, Frosted Glassmorphism, Micro-Animations, Fixed-Anchor Non-Shifting Responsive Layout, CSS Grid & Flexbox, Real-Time Dynamic DOM Synchronization. | Custom-designed web console featuring a centered typing dock, non-shifting responsive layout, month calendar matrix, and real-time alerts. |
 
 ---
 
 ## ◈ Key Architectural Subsystems
 
 ### 1. Zero-Dependency Networking & OpenAI Compatibility
-Meera provides full drop-in compatibility with the official OpenAI API specification without pulling in heavyweight dependencies like FastAPI or Uvicorn:
+Meera provides complete drop-in compatibility with the official OpenAI API specification without external web frameworks:
 - **Endpoints**: `/v1/chat/completions`, `/v1/models`, `/health`.
 - **Streaming**: Native Server-Sent Events (SSE) streaming with HTTP chunked encoding.
 - **Client Integration**: Seamlessly connects to Cursor, Continue, Open WebUI, or the standard `openai` Python SDK.
@@ -148,38 +158,41 @@ Meera provides full drop-in compatibility with the official OpenAI API specifica
 Meera implements a secure, layered tool execution system:
 - **`READ` Tier (Autonomous)**: Read-only filesystem operations strictly confined within the sandboxed `workspace/` folder (`list_directory`, `read_file`, `search_files`).
 - **`PREPARE` Tier (Sandboxed)**: Python computational scratchpad (`evaluate_python`) executing arithmetic and data transforms with restricted built-in primitives.
-- **`ACT` Tier (Human-in-the-Loop)**: Shell command execution (`run_command`) requiring affirmative human confirmation token approval before invocation.
+- **`ACT` Tier (Human-in-the-Loop)**: High-impact shell execution (`run_command`) requiring affirmative human confirmation token approval before invocation.
 - **Native MCP Adapter**: Pure standard-library JSON-RPC 2.0 client communicating over standard input/output (`stdio`) pipes with external MCP tool servers.
 
-### 3. Persistent SQLite Memory Engine & Token Budget Sentry
-Context is deterministically partitioned to operate within the 1024 context budget:
-- **System Persona**: ~120 tokens.
-- **Long-Term Memory Store**: Up to 5 verified user preferences and facts injected into context.
-- **Session Summary Checkpoint**: Extractive summarization preserves context beyond turn limits.
-- **Sliding Message Window**: Last 6 conversation turns preserved verbatim.
-- **Generation Headroom**: ~300 tokens reserved for model completion.
-- **Engine**: SQLite configured with `PRAGMA journal_mode=WAL;` and `threading.RLock()` synchronization.
+### 3. Persistent SQLite Write-Ahead Logging (WAL) Memory Engine
+- **Engine**: Local SQLite database configured with `PRAGMA journal_mode=WAL;` and `threading.RLock()` synchronization.
+- **Relational Integrity**: Foreign key cascading deletions (`ON DELETE CASCADE`) ensure sessions, messages, and summaries are cleaned atomically.
+- **Long-Term Memory Store**: Persistent key-value facts and user preferences dynamically injected into the system prompt.
+- **Context Summarization Checkpoints**: Extractive summarization preserves continuity across extended multi-turn sessions without token overflow.
 
 ### 4. Zero-Overhead Skills Engine & Multi-Agent Orchestration
-- **Dormant State**: Zero token footprint when dormant. Behavioral extensions (~60-80 tokens) are injected dynamically only upon explicit activation or heuristic keyword intent match.
-- **MultiAgentOrchestrator**: Deploys isolated `SubAgent` workers with dedicated context windows to execute multi-step research, architecture design, and code synthesis plans.
+- **Zero Token Footprint When Dormant**: Dormant skills consume 0 tokens from the system context window. Only when activated explicitly or auto-detected does the agent inject ~60-80 tokens of focused behavioral guidelines.
+- **MultiAgentOrchestrator**: Coordinates sequential or parallel `SubAgent` workers, each executing within an isolated 1024-token context window to prevent prompt pollution, synthesizing results into an executive briefing.
 
 ### 5. Microsoft Teams OAuth2 Device Code Connector & Channel Sentry
-- **RFC 8628 Device Authorization**: Pure standard-library implementation of the Microsoft Device Code flow via `urllib.request`. Zero Azure SDK dependencies.
-- **Channel Sentry**: Scans enrolled class channels for professor announcements, exams, and schedule changes, routing notices into the Alerts console.
-- **Academic Retention Policy**: Strict 90-day cutoff sentry and automated past-year pruning ensure calendar views only display relevant current-semester coursework.
+- **RFC 8628 Flow**: Implemented entirely via standard library `urllib.request` with zero third-party Azure SDKs, utilizing the official Microsoft public client ID.
+- **Silent Token Renewal**: Background worker silently refreshes access tokens before expiration, maintaining continuous synchronization without user re-authentication.
+- **Course Channel Sentry**: Periodically monitors enrolled class teams for announcements, exams, and schedule changes, routing notices into the Alerts console with deduplication.
 
-### 6. Project Workspaces & Sandboxed File Management
-- **Project Context Partitioning**: Chats, notes, and tasks can be grouped within customizable project workspaces with unique accent colors.
-- **Sandboxed File Operations**: Pure Python file management confined to the project directory within `workspace/`.
+### 6. Academic Calendar & Coursework Synchronization Engine
+- **iCalendar (RFC 5545) Engine**: Native parsing of `.ics` and `webcal` feeds with authenticated cookie support.
+- **Interactive Month Calendar Grid**: Visual day-matrix with platform-coded event chips, priority indicators, and completion toggles.
+- **Automated 90-Day Retention Policy**: Prunes academic records older than 90 days and purges legacy academic years to keep the calendar matrix relevant and fast.
 
 ### 7. Knowledge Library Vault & Document Context Injection
 - **Local Document Storage**: Persistent document repository (`storage/library/`) for course syllabi, lab manuals, and research PDFs.
+- **Base64 Document Ingestion**: Standard library file upload, validation, and MIME detection.
 - **Ask Meera Integration**: One-click prompt context injection allows instant semantic reasoning and summarization over uploaded materials.
 
-### 8. Plugins Ecosystem & Connector Hub
-- **Zero-Dependency Connectors**: Modular plugin interface for LMS, Microsoft Teams, GitHub, and external MCP servers.
-- **Real-Time Connectivity Testing**: Interactive health and connection verification directly from the UI Plugins modal.
+### 8. Project Workspaces & Sandboxed File Management
+- **Context Partitioning**: Organizes chats, notes, and tasks into dedicated project containers with customizable color accents.
+- **Sandboxed Workspace**: File creation and listing confined strictly within project subfolders inside `workspace/`.
+
+### 9. Plugins Ecosystem & Connector Hub
+- **Modular Plugin Interface**: Manages connections for LMS, Microsoft Teams, GitHub, and external MCP servers.
+- **Live Connectivity Testing**: Interactive health checks and feed verification directly from the UI Plugins modal.
 
 ---
 
@@ -429,4 +442,4 @@ python -m unittest discover tests
 
 ## ◈ License
 
-MIT License. Engineered by [Arshit](https://github.com/Arshit-dv) for local-first, privacy-preserving personal AI computing.
+MIT License. Engineered by [Arshit](https://github.com/Arshit-dv) for local-first, privacy-preserving edge AI computing.
